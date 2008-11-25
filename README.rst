@@ -28,6 +28,8 @@ The subversion module provides a ``subversion`` class and a
   ``svn+ssh://$repo_base/$name/trunk`` or, if a branch is specified,
   ``svn+ssh://$repo_base/$name/branches/$branch``. This definition
   automatically includes the ``subversion`` class.
+  Please note: This definition is similar to ``subversion::working-copy`` and they
+  might get merged in the future.
 
   - ``$name``: The name of the subversion project. This will be used
     to construct the URL used to check out the project.
@@ -82,6 +84,8 @@ The subversion module provides a ``subversion`` class and a
   Serve subversion-based code from a local location.  The job of this
   module is to check the data out from subversion and keep it up to
   date, especially useful for providing data to your Puppet server.
+  Please note: This definition is similar to ``subversion::working-copy`` and they
+  might get merged in the future.
 
   - ``$source``: From where to check the repository out
   - ``$path``: Where to place the checked out repository
