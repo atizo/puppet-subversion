@@ -69,6 +69,8 @@ The subversion module provides a ``subversion`` class and a
   - ``$path``: The path of the parent directory of the subversion repository
     Default is set to absent, which means that ``subversion::basics`` gets
     included and the parent directory is set to: ``/srv/svn/``
+  - ``$default_layout``: Wether we should create an inital layout (trunk, branches, tags)
+    in the newly created repository. Default: ``false``
   - ``$owner``: The owner of the repository. Default is to false, which means
     that puppet defaults are used.
   - ``$group``: The group of the repository. Default is to false, which means

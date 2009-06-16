@@ -17,10 +17,11 @@
 
 # Create a new subversion repository.
 define subversion::svnrepo(
-    $path='absent',
-    $owner='false',
-    $group='false',
-    $mode='false'
+    $path = 'absent',
+    $default_layout = false,
+    $owner = false,
+    $group = false,
+    $mode = false
 ) {
     include subversion
 
@@ -52,14 +53,38 @@ define subversion::svnrepo(
         ensure => directory,
         recurse => true,
     }
+    if $default_layout {
+        exec{"svn mkdir file://${create_path}/{trunk,tags,branches} -m \"initial layout\"":
+            refreshonly => true,
+            subscribe => Exec["create-svn-$name"],
+        }
+    }
     if $owner {
         File["${create_path}"]{
             owner => $owner,
+        }
+        exec{"chown -R ${owner} ${create_path}":
+            refreshonly => true,
+            subscribe => Exec["create-svn-$name"],
+        }
+        if $default_layout {
+            Exec["chown -R ${owner} ${create_path}"]{
+                require => Exec["svn mkdir file://${create_path}/{trunk,tags,branches} -m \"initial layout\""],
+            }
         }
     } 
     if $group {
         File["${create_path}"]{
             group => $group,
+        }
+        exec{"chgrp -R ${group} ${create_path}":
+            refreshonly => true,
+            subscribe => Exec["create-svn-$name"],
+        }
+        if $default_layout {
+            Exec["chgrp -R ${group} ${create_path}"]{
+                require => Exec["svn mkdir file://${create_path}/{trunk,tags,branches} -m \"initial layout\""],
+            }
         }
     } 
     if $mode {
