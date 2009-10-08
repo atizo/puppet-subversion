@@ -50,6 +50,7 @@ define subversion::svnrepo(
         }
     }
     file{"${create_path}":
+        backup => false,
         ensure => directory,
         recurse => true,
     }
