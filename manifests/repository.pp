@@ -43,7 +43,8 @@ define subversion::repository(
         recurse => $recurse_permissions,
     }
     if $default_layout {
-        exec{"/usr/bin/svn mkdir file://$repository_path/{trunk,tags,branches} -m 'initial layout'":
+        exec{"subversion-create-default_layout-$name":
+            command => "/usr/bin/svn mkdir file://$repository_path/{trunk,tags,branches} -m 'initial layout'",
             refreshonly => true,
             require => File[$repository_path],
             subscribe => Exec["subversion-create-repository-$name"],
@@ -53,9 +54,15 @@ define subversion::repository(
         File[$repository_path]{
             owner => $owner,
         }
+        Exec["subversion-create-default_layout-$name"]{
+            owner => $owner,
+        }
     } 
     if $group {
         File[$repository_path]{
+            group => $group,
+        }
+        Exec["subversion-create-default_layout-$name"]{
             group => $group,
         }
     } 
