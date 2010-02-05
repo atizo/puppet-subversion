@@ -16,11 +16,11 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 define subversion::repository(
-    $basepath = false,
-    $default_layout,
     $owner,
     $group,
     $mode,
+    $basepath = false,
+    $default_layout = false,
     $recurse_permissions = true
 ) {
     include subversion
