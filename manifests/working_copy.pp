@@ -16,37 +16,47 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# Serve subversion-based code from a local location.  The job of this
+# Serve subversion-based code from a local location.  The job of thisq
 # module is to check the data out from subversion and keep it up to
 # date, especially useful for providing data to your Puppet server.
 #
 # Example usage:
-#   svnserve { dist:
-#       source => "https://reductivelabs.com/svn",
-#       path => "/dist",
+#   subversion::working_copy{'/dist':
+#       url => "https://reductivelabs.com/svn/dist",
 #       user => "puppet",
 #       password => "mypassword"
 #   }
-define svnserve($source, $path, $user = false, $password = false) {
-    file { $path:
+
+define subversion::working_copy(
+    $url,
+    $username,
+    $password
+) {
+    file{$name:
         ensure => directory,
-        owner => root,
-        group => root
+        owner => root, group => root, mode => 0755;
     }
-    $svncmd = $user ? {
-        false => "/usr/bin/svn co --non-interactive $source/$name .",
-        default => "/usr/bin/svn co --non-interactive --username $user --password '$password' $source/$name ."
-    }   
-    exec { "svnco-$name":
+    if $username && $password {
+        $svncmd = "/usr/bin/svn co --non-interactive --username $username --password '$password' $url ."
+    } else {
+        $svncmd = "/usr/bin/svn co --non-interactive $url ."
+    }
+    exec{"subversion-checkout-working_copy-$name":
+        cwd => $name,
         command => $svncmd,
-        cwd => $path,
-        require => [ File[$path], Package['subversion'] ],
-        creates => "$path/.svn"
+        creates => "$name/.svn",
+        require => [
+            Package['subversion'],
+            File[$name],
+        ],
     }
-    exec { "svnupdate-$name":
+    exec{"subversion-update-working_copy-$name":
+        cwd => $name,
         command => "/usr/bin/svn update",
-        require => [ Exec["svnco-$name"], Package['subversion'] ],
-        onlyif => '/usr/bin/svn status -u --non-interactive | /bin/grep "\*"',
-        cwd => $path
+        onlyif => "/usr/bin/svn status -u --non-interactive | /bin/grep '*'",
+        require => [
+            Package['subversion'],
+            Exec["subversion-checkout-working_copy-$name"],
+        ],
     }
 }

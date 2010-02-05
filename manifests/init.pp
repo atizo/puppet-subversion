@@ -21,7 +21,7 @@
 
 class subversion {
     case $operatingsystem {
-        debian,ubuntu: { include subversion::debian }
+        debian,ubuntu: { include subversion::base::debian }
         default: { include subversion::base }
     }
 }

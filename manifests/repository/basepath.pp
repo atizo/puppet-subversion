@@ -1,7 +1,4 @@
-# manifests/basics.pp
-
-# some basic directory setups for a server
-class subversion::basics {
+class subversion::repository::basepath {
     file{'/srv/svn':
         ensure => directory,
         owner => root, group => 0, mode => 0755;
