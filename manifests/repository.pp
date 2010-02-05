@@ -16,7 +16,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 define subversion::repository(
-    $basepath,
+    $basepath = false,
     $default_layout,
     $owner,
     $group,
