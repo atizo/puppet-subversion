@@ -54,16 +54,20 @@ define subversion::repository(
         File[$repository_path]{
             owner => $owner,
         }
-        Exec["subversion-create-default_layout-$name"]{
-            owner => $owner,
+        if $default_layout {
+            Exec["subversion-create-default_layout-$name"]{
+                owner => $owner,
+            }
         }
     } 
     if $group {
         File[$repository_path]{
             group => $group,
         }
-        Exec["subversion-create-default_layout-$name"]{
-            group => $group,
+        if $default_layout {
+            Exec["subversion-create-default_layout-$name"]{
+                group => $group,
+            }
         }
     } 
     if $mode {
