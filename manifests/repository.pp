@@ -17,10 +17,11 @@
 
 define subversion::repository(
     $basepath,
-    $default_layout = false,
+    $default_layout,
     $owner,
     $group,
     $mode,
+    $recurse_permissions = true
 ) {
     include subversion
 
@@ -39,7 +40,7 @@ define subversion::repository(
     file{$repository_path:
         backup => false,
         ensure => directory,
-        recurse => true,
+        recurse => $recurse_permissions,
     }
     if $default_layout {
         exec{"/usr/bin/svn mkdir file://$repository_path/{trunk,tags,branches} -m 'initial layout'":
