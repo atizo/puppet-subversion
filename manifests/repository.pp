@@ -56,7 +56,7 @@ define subversion::repository(
         }
         if $default_layout {
             Exec["subversion-create-default_layout-$name"]{
-                owner => $owner,
+                user => $owner,
             }
         }
     } 
